@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kota Store — The Street Food Revolution</title>
+<meta name="description" content="Kota. Loaded. Legendary. South Africa's most iconic street food, elevated to an art form.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ========================
+   DESIGN SYSTEM
+======================== */
+:root {
+  --accent: #E8941A;
+  --accent-dim: rgba(232,148,26,0.12);
+  --accent-glow: rgba(232,148,26,0.4);
+  --green: #4D7C52;
+  --green-dim: rgba(77,124,82,0.12);
+  --bg: #FFFFFF;
+  --bg2: #F8F5F0;
+  --bg3: #EEEBE6;
+  --text: #0D0D0D;
+  --text-muted: rgba(13,13,13,0.58);
+  --text-subtle: rgba(13,13,13,0.35);
+  --border: rgba(13,13,13,0.09);
+  --card-bg: rgba(0,0,0,0.03);
+  --font-head: 'Space Grotesk', sans-serif;
+  --font-body: 'Archivo', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --easeOut: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: auto;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: clip;
+  line-height: 1.6;
+}
+
+::selection { background: var(--accent); color: #000; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #e0ddd8; }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--accent), var(--green)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 10px var(--accent-glow); }
+
+/* ========================
+   STARSCAPE CANVAS
+======================== */
+#starscape {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ========================
+   SCROLL PROGRESS BAR
+======================== */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 1000;
+  background: linear-gradient(90deg, var(--accent), var(--green), var(--accent));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.05s linear;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+@keyframes progressShimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ========================
+   LOADER
+======================== */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  transition: opacity 0.6s var(--easeOut), visibility 0.6s;
+}
+
+#loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-logo {
+  width: 80px;
+  height: 80px;
+  animation: loaderPulse 2s ease-in-out infinite;
+}
+
+.loader-brand {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.loader-track {
+  width: 240px;
+  height: 3px;
+  background: rgba(0,0,0,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loader-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.15s ease;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.loader-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+@keyframes loaderPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px var(--accent-glow)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 35px var(--accent-glow)); }
+}
+
+/* ========================
+   NAVBAR
+======================== */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.5s var(--easeOut);
+}
+
+#navbar.scrolled {
+  max-width: 860px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(13,13,13,0.08);
+  border-radius: 50px;
+  top: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1), 0 0 0 1px rgba(232,148,26,0.15);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.nav-logo img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.nav-logo-text {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s;
+  letter-spacing: 0.03em;
+}
+
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  background: var(--accent);
+  color: #000 !important;
+  font-weight: 700 !important;
+  padding: 10px 22px !important;
+  border-radius: 50px !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  box-shadow: 0 4px 20px var(--accent-glow) !important;
+}
+
+.nav-cta:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px var(--accent-glow) !important;
+  color: #000 !important;
+}
+
+/* ========================
+   HERO SECTION
+======================== */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-bg-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 600px; height: 600px;
+  background: rgba(232,148,26,0.42);
+  top: -20%; left: -10%;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 480px; height: 480px;
+  background: rgba(77,124,82,0.3);
+  top: 30%; right: -10%;
+  animation-delay: -3s;
+}
+
+.orb-3 {
+  width: 300px; height: 300px;
+  background: rgba(232,148,26,0.2);
+  bottom: 10%; left: 30%;
+  animation-delay: -6s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 30px) scale(0.95); }
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(232,148,26,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,148,26,0.1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 900px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(232,148,26,0.3);
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.8s var(--easeOut) 0.3s both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: ping 1.5s ease-in-out infinite;
+}
+
+@keyframes ping {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+.hero-title {
+  font-family: var(--font-head);
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.8s var(--easeOut) 0.5s both;
+}
+
+.hero-title-line1 {
+  display: block;
+  color: var(--text);
+}
+
+.hero-title-line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--accent) 0%, #F5C842 50%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 60px rgba(232,148,26,0.7)) drop-shadow(0 4px 24px rgba(232,148,26,0.5));
+}
+
+.hero-title-line3 {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.45em;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  margin-top: 12px;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-muted);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+  animation: fadeInUp 0.8s var(--easeOut) 0.7s both;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.8s var(--easeOut) 0.9s both;
+  margin-bottom: 60px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--easeOut), box-shadow 0.2s;
+  box-shadow: 0 4px 24px var(--accent-glow), 0 0 0 0 var(--accent);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 40px var(--accent-glow);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: fadeInUp 0.8s var(--easeOut) 1.2s both;
+  cursor: pointer;
+}
+
+.scroll-hint-text {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+}
+
+.scroll-hint-arrow {
+  width: 40px; height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bounceDown 2s ease-in-out infinite;
+}
+
+.scroll-hint-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 2;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================
+   SCROLL ANIMATION SECTION
+======================== */
+#scroll-anim {
+  position: relative;
+  height: 600vh;
+  z-index: 1;
+}
+
+/*
+  CRITICAL: position:fixed — NOT sticky.
+  overflow-x:hidden on html/body (which we need) silently kills sticky.
+  IntersectionObserver watching the spacer section handles show/hide instead.
+*/
+#scroll-anim-sticky {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #fff;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* fade OUT: opacity animates, then visibility:hidden fires after delay */
+  transition: opacity 0.65s ease, visibility 0s linear 0.65s;
+}
+
+#scroll-anim-sticky.sh-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  /* fade IN: visibility fires immediately, then opacity animates */
+  transition: opacity 0.65s ease, visibility 0s linear 0s;
+}
+
+#frame-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: block;
+  mix-blend-mode: multiply;
+  z-index: 1;
+  will-change: contents;
+  transform: translateZ(0);
+}
+
+/* Decorative large background text behind animation */
+.scroll-bg-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-head);
+  font-size: clamp(20vw, 28vw, 380px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: #A85D00;
+  opacity: 0.78;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  user-select: none;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 40px rgba(232,148,26,1),
+    0 0 80px rgba(232,148,26,0.9),
+    0 0 140px rgba(232,148,26,0.7),
+    0 0 240px rgba(232,148,26,0.5),
+    0 0 400px rgba(232,148,26,0.3),
+    0 8px 32px rgba(120,55,0,0.75);
+  animation: kotaPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes kotaPulse {
+  0%, 100% {
+    opacity: 0.78;
+    text-shadow:
+      0 0 40px rgba(232,148,26,1),
+      0 0 80px rgba(232,148,26,0.9),
+      0 0 140px rgba(232,148,26,0.7),
+      0 0 240px rgba(232,148,26,0.5),
+      0 0 400px rgba(232,148,26,0.3),
+      0 8px 32px rgba(120,55,0,0.75);
+  }
+  50% {
+    opacity: 0.96;
+    text-shadow:
+      0 0 60px rgba(255,170,30,1),
+      0 0 120px rgba(232,148,26,1),
+      0 0 200px rgba(232,148,26,0.85),
+      0 0 360px rgba(232,148,26,0.6),
+      0 0 560px rgba(232,148,26,0.35),
+      0 12px 50px rgba(120,55,0,0.95);
+  }
+}
+
+/* Annotation cards */
+.annotation-card {
+  position: absolute;
+  z-index: 10;
+  background: rgba(13,13,13,0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px 24px;
+  max-width: 280px;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.5s var(--easeOut), transform 0.5s var(--easeOut);
+  pointer-events: none;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  color: #F5F0E8;
+}
+
+.annotation-card.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.annotation-card.card-left { left: 5%; }
+.annotation-card.card-right { right: 5%; }
+.annotation-card.card-top { top: 15%; }
+.annotation-card.card-mid { top: 40%; }
+.annotation-card.card-bottom { bottom: 18%; }
+
+.card-number {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #F5F0E8;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: rgba(245,240,232,0.6);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.card-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.card-stat-num {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.card-stat-label {
+  font-size: 0.75rem;
+  color: rgba(245,240,232,0.6);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+}
+
+.card-accent-line {
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: 1px;
+  margin-bottom: 14px;
+}
+
+/* Section label overlay */
+.section-label {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(232,148,26,0.12);
+  border: 1px solid rgba(232,148,26,0.3);
+  color: var(--accent);
+  padding: 5px 18px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.section-label.visible { opacity: 1; }
+
+/* ========================
+   MENU SECTION
+======================== */
+#menu {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding: 120px 0;
+  overflow: hidden;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 80px;
+  padding: 0 24px;
+}
+
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.section-title span {
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.menu-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: transform 0.4s var(--easeOut), border-color 0.3s, box-shadow 0.4s;
+  cursor: pointer;
+  position: relative;
+  group: true;
+}
+
+.menu-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(232,148,26,0.3);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 40px rgba(232,148,26,0.08);
+}
+
+.menu-card-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--easeOut);
+}
+
+.menu-card:hover .menu-card-img {
+  transform: scale(1.05);
+}
+
+.menu-card-img-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.menu-card-img-wrapper::after {
+  content: 'Tap to Order →';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 28px 16px 12px;
+  background: linear-gradient(to top, rgba(232,148,26,0.95) 0%, transparent 100%);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #000;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.menu-card:hover .menu-card-img-wrapper::after {
+  opacity: 1;
+}
+
+.menu-card-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.menu-card-content {
+  padding: 24px;
+}
+
+.menu-card-name {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.menu-card-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.menu-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-card-price {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.menu-card-price span {
+  font-size: 0.875rem;
+  color: var(--text-subtle);
+  font-weight: 400;
+  font-family: var(--font-mono);
+}
+
+.menu-card-btn {
+  width: 40px; height: 40px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.menu-card-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 8px 25px var(--accent-glow);
+}
+
+.menu-card-btn svg {
+  width: 18px; height: 18px;
+  stroke: #000;
+  fill: none;
+  stroke-width: 2.5;
+}
+
+/* ========================
+   SPECS / STATS SECTION
+======================== */
+#specs {
+  position: relative;
+  z-index: 2;
+  background: var(--bg2);
+  padding: 100px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+#specs::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 100%, rgba(232,148,26,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--border);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.spec-item {
+  background: var(--bg2);
+  padding: 48px 32px;
+  text-align: center;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.spec-item:hover {
+  background: var(--bg3);
+}
+
+.spec-number {
+  font-family: var(--font-head);
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.spec-number.counting {
+  text-shadow: 0 0 30px var(--accent-glow);
+}
+
+.spec-unit {
+  font-size: 0.5em;
+  color: var(--text-muted);
+  vertical-align: super;
+  font-family: var(--font-mono);
+}
+
+.spec-label {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.spec-desc {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+/* ========================
+   FEATURES SECTION
+======================== */
+#features {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding: 120px 0;
+  overflow: hidden;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.feature-card {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 36px 32px;
+  transition: transform 0.4s var(--easeOut), border-color 0.3s, box-shadow 0.4s;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feature-card:hover::before { opacity: 1; }
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(232,148,26,0.2);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+
+.feature-icon {
+  width: 56px; height: 56px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(232,148,26,0.2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 1.6rem;
+}
+
+.feature-title {
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 14px;
+}
+
+.feature-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* ========================
+   CULTURE SECTION (Marquee + gallery)
+======================== */
+#culture {
+  position: relative;
+  z-index: 2;
+  background: var(--bg2);
+  padding: 100px 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+}
+
+.marquee-wrap {
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 60px;
+  mask-image: linear-gradient(90deg, transparent, black 15%, black 85%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 0;
+  animation: marqueeScroll 20s linear infinite;
+  white-space: nowrap;
+}
+
+.marquee-track:nth-child(2) {
+  animation-direction: reverse;
+  animation-duration: 25s;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 32px;
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-subtle);
+}
+
+.marquee-item span {
+  color: var(--accent);
+  font-size: 0.8em;
+}
+
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.culture-gallery {
+  display: flex;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  align-items: stretch;
+}
+
+.gallery-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.gallery-img {
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg3);
+  position: relative;
+}
+
+.gallery-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s var(--easeOut);
+}
+
+.gallery-img:hover img {
+  transform: scale(1.04);
+}
+
+.gallery-img.tall { height: 340px; }
+.gallery-img.short { height: 220px; }
+.gallery-img.wide { height: 280px; width: 100%; }
+
+.gallery-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.gallery-img:hover .gallery-img-overlay {
+  opacity: 1;
+}
+
+.gallery-img-label {
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* ========================
+   CTA SECTION
+======================== */
+#cta {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding: 160px 40px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.cta-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(232,148,26,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.cta-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.cta-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.cta-title span {
+  background: linear-gradient(135deg, var(--accent), #F5C842, var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cta-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+
+.cta-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ========================
+   TESTIMONIALS
+======================== */
+#testimonials {
+  position: relative;
+  z-index: 2;
+  background: var(--bg2);
+  padding: 120px 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+}
+
+.testimonials-track-wrapper {
+  overflow: hidden;
+  cursor: grab;
+  padding: 20px 40px;
+}
+
+.testimonials-track-wrapper:active { cursor: grabbing; }
+
+.testimonials-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  transition: transform 0.1s linear;
+}
+
+.testimonial-card {
+  width: 360px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px;
+  transition: border-color 0.3s, transform 0.4s var(--easeOut), box-shadow 0.4s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.testimonial-card:hover {
+  border-color: rgba(232,148,26,0.3);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(232,148,26,0.1);
+}
+
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.star {
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.testimonial-text {
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.testimonial-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.testimonial-name {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.testimonial-location {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+}
+
+/* ========================
+   LOCATION SECTION
+======================== */
+#location {
+  padding: 120px 60px;
+  background: var(--bg2);
+  position: relative;
+  z-index: 2;
+}
+
+.location-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.location-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.location-detail-icon {
+  width: 48px; height: 48px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(232,148,26,0.3);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.location-detail-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin-bottom: 4px;
+}
+
+.location-detail-value {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.location-map {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.1);
+  aspect-ratio: 4/3;
+}
+
+.location-map iframe {
+  width: 100%; height: 100%;
+  display: block;
+  border: 0;
+}
+
+.location-directions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 13px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  align-self: flex-start;
+}
+
+.location-directions:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+@media (max-width: 768px) {
+  .location-container { grid-template-columns: 1fr; gap: 40px; }
+  #location { padding: 80px 24px; }
+}
+
+/* ========================
+   FOOTER
+======================== */
+#footer {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 80px 40px 40px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+  border-bottom: 1px solid var(--border);
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.footer-logo img {
+  width: 44px;
+  filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.footer-logo-text {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 280px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.social-btn {
+  width: 40px; height: 40px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.social-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.footer-col-title {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+}
+
+.footer-copy span {
+  color: var(--accent);
+}
+
+.footer-love {
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+}
+
+/* ========================
+   SCROLL-TO-TOP BTN
+======================== */
+#scroll-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 46px; height: 46px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 400;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s var(--easeOut);
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+#scroll-top.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#scroll-top:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 30px var(--accent-glow);
+}
+
+#scroll-top svg {
+  width: 20px; height: 20px;
+  stroke: #000;
+  fill: none;
+  stroke-width: 2.5;
+}
+
+/* ========================
+   ORDER MODAL
+======================== */
+.order-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(13,13,13,0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--easeOut), visibility 0s linear 0.4s;
+}
+
+.order-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s var(--easeOut), visibility 0s linear 0s;
+}
+
+.order-modal {
+  background: var(--bg);
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  box-shadow: 0 48px 140px rgba(0,0,0,0.3), 0 0 0 1px rgba(232,148,26,0.12), 0 0 80px rgba(232,148,26,0.06);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9) translateY(28px);
+  transition: transform 0.4s var(--easeOut);
+}
+
+.order-modal-overlay.active .order-modal {
+  transform: scale(1) translateY(0);
+}
+
+.order-modal::-webkit-scrollbar { width: 4px; }
+.order-modal::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.order-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+  transition: background 0.2s, transform 0.2s;
+}
+.order-modal-close:hover { background: rgba(232,148,26,0.15); transform: rotate(90deg); }
+.order-modal-close svg { width: 14px; height: 14px; stroke: var(--text); fill: none; stroke-width: 2.5; }
+
+.order-modal-img-wrap {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  border-radius: 28px 28px 0 0;
+}
+.order-modal-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.order-modal-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 4px 11px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.order-modal-body { padding: 24px 28px 28px; }
+
+.order-modal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.order-modal-name {
+  font-family: var(--font-head);
+  font-size: 1.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.order-modal-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.order-modal-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.order-modal-base-price {
+  font-family: var(--font-head);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.order-modal-per {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+}
+
+.order-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin-top: 18px;
+  margin-bottom: 10px;
+}
+
+.order-qty-row {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  overflow: hidden;
+}
+.order-qty-btn {
+  width: 42px; height: 42px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  line-height: 1;
+}
+.order-qty-btn:hover { background: var(--accent-dim); color: var(--accent); }
+.order-qty-val {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-width: 44px;
+  text-align: center;
+}
+
+.order-extras { display: flex; flex-direction: column; gap: 6px; }
+
+.order-extra-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  user-select: none;
+}
+.order-extra-item:hover { border-color: rgba(232,148,26,0.35); background: var(--accent-dim); }
+.order-extra-item input[type="checkbox"] { display: none; }
+.order-extra-item:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+.order-extra-item::before {
+  content: '';
+  width: 17px; height: 17px;
+  border: 2px solid rgba(13,13,13,0.18);
+  border-radius: 5px;
+  flex-shrink: 0;
+  transition: background 0.18s, border-color 0.18s;
+  background: var(--bg);
+}
+.order-extra-item:has(input:checked)::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.extra-name { flex: 1; font-size: 0.875rem; font-weight: 500; }
+.extra-price {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.order-notes {
+  width: 100%;
+  height: 68px;
+  padding: 11px 14px;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.order-notes:focus { border-color: var(--accent); }
+.order-notes::placeholder { color: var(--text-subtle); }
+
+.order-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.order-total-label {
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.order-total-val {
+  font-family: var(--font-head);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.order-submit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 17px 32px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+.order-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 40px var(--accent-glow); }
+.order-submit-btn.success { background: var(--green); box-shadow: 0 4px 24px rgba(77,124,82,0.4); cursor: default; }
+
+@media (max-width: 540px) {
+  .order-modal { border-radius: 20px; }
+  .order-modal-body { padding: 18px 20px 24px; }
+}
+
+/* ========================
+   REVEAL ANIMATIONS
+======================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(8px);
+  transition: opacity 0.8s var(--easeOut), transform 0.8s var(--easeOut), filter 0.8s var(--easeOut);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ========================
+   MOBILE RESPONSIVE
+======================== */
+
+/* ── Hamburger button ──────────────────────────────────── */
+#nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 600;
+  position: relative;
+  flex-shrink: 0;
+}
+#nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.35s cubic-bezier(.77,0,.18,1), opacity 0.25s;
+  transform-origin: center;
+}
+body.nav-open #nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open #nav-toggle span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── 1024 px — tablet landscape ───────────────────────── */
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .specs-grid { grid-template-columns: repeat(2, 1fr); }
+  .menu-grid { grid-template-columns: repeat(2, 1fr); padding: 0 32px; }
+}
+
+/* ── 900 px — small tablet ─────────────────────────────── */
+@media (max-width: 900px) {
+  #nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    z-index: 499;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    list-style: none;
+  }
+  body.nav-open .nav-links {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .nav-links a { font-size: 1.4rem; font-weight: 600; }
+  .nav-cta { padding: 14px 36px !important; font-size: 1.1rem !important; }
+
+  .features-grid { grid-template-columns: 1fr 1fr; padding: 0 24px; }
+  .menu-grid { padding: 0 24px; grid-template-columns: 1fr 1fr; }
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .culture-gallery { flex-direction: column; }
+  .gallery-col { flex-direction: row; flex-wrap: wrap; gap: 12px; }
+  .gallery-img.tall, .gallery-img.short { height: 200px; }
+}
+
+/* ── 768 px — tablet portrait / large phone ─────────────── */
+@media (max-width: 768px) {
+  /* Remove expensive GPU compositing and KOTA bg text on small screens */
+  #frame-canvas { mix-blend-mode: normal; }
+  .scroll-bg-text { display: none; }
+
+  #hero { padding: 0 24px; }
+  .hero-badge { font-size: 0.75rem; padding: 7px 16px; }
+  .hero-ctas { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+  #menu { padding: 80px 24px; }
+  .menu-grid { grid-template-columns: 1fr; padding: 0; }
+
+  #specs { padding: 60px 24px; }
+  #features { padding: 60px 24px; }
+  #culture { padding: 60px 24px; }
+  #cta { padding: 120px 24px; }
+  #testimonials { padding: 60px 24px; }
+
+  .footer-top { grid-template-columns: 1fr; gap: 32px; }
+  #footer { padding: 60px 24px 32px; }
+}
+
+/* ── 640 px — standard mobile ───────────────────────────── */
+@media (max-width: 640px) {
+  #navbar { padding: 14px 20px; }
+  #navbar.scrolled { max-width: calc(100% - 28px); padding: 10px 16px; }
+
+  .features-grid { grid-template-columns: 1fr; padding: 0; }
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+
+  .annotation-card { max-width: 148px; padding: 10px 12px; }
+  .annotation-card.card-left { left: 2%; }
+  .annotation-card.card-right { right: 2%; }
+  .card-desc { display: none; }
+  .card-stat { display: none; }
+  .card-title { font-size: 0.8rem; }
+  .card-number { font-size: 0.6rem; }
+  .annotation-card.card-top { top: 8%; }
+  .annotation-card.card-mid { top: auto; bottom: 25%; }
+  .annotation-card.card-bottom { bottom: 10%; }
+
+  .culture-gallery { padding: 0 16px; }
+  .gallery-col { flex-direction: column; }
+  .gallery-img.tall, .gallery-img.short { height: 180px; }
+
+  #scroll-anim { height: 350vh; }
+  #cta { padding: 80px 20px; }
+  .section-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+}
+
+/* ── 480 px — small phone ────────────────────────────────── */
+@media (max-width: 480px) {
+  #navbar { padding: 12px 16px; }
+  .nav-logo-text { font-size: 0.95rem; }
+  .nav-logo img { width: 30px; height: 30px; }
+
+  .hero-badge { display: none; }
+  .hero-title { font-size: clamp(2.2rem, 11vw, 3.5rem); }
+  .hero-subtitle { font-size: 0.9rem; }
+
+  .specs-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .spec-card { padding: 24px 16px; }
+  .spec-number { font-size: 2.2rem; }
+
+  .feature-card { padding: 28px 20px; }
+
+  .annotation-card { display: none; }
+
+  .testimonial-card { padding: 28px 20px; }
+  .testimonial-text { font-size: 0.9rem; }
+
+  #cta { padding: 60px 16px; }
+  .cta-sub { font-size: 0.85rem; }
+
+  #footer { padding: 48px 16px 28px; }
+  .footer-brand { font-size: 1.5rem; }
+
+  #order-modal { align-items: flex-end; }
+  .order-modal-inner {
+    padding: 24px 16px;
+    border-radius: 20px 20px 0 0;
+    max-height: 92dvh;
+    max-height: 92vh;
+  }
+}
+
+/* ── 360 px — very small phone ───────────────────────────── */
+@media (max-width: 360px) {
+  .hero-title { font-size: clamp(1.9rem, 11vw, 2.8rem); }
+  .nav-logo-text { display: none; }
+
+  #menu { padding: 60px 12px; }
+  .menu-card-body { padding: 16px; }
+
+  .specs-grid { grid-template-columns: 1fr; }
+  .spec-card { padding: 20px 16px; }
+
+  #features { padding: 60px 12px; }
+  .feature-card { padding: 24px 16px; }
+
+  .footer-top { gap: 24px; }
+  #footer { padding: 40px 12px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- STARSCAPE -->
+<canvas id="starscape"></canvas>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <img class="loader-logo" src="images/logo.png" alt="Kota Store">
+  <div class="loader-brand">Kota Store</div>
+  <div class="loader-track">
+    <div class="loader-bar" id="loader-bar"></div>
+  </div>
+  <div class="loader-text" id="loader-text">Loading frames...</div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="images/logo.png" alt="Kota Store Logo">
+    <span class="nav-logo-text">Kota Store</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#features">Our Story</a></li>
+    <li><a href="#culture">Kulture</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#location">Location</a></li>
+    <li><a href="#cta" class="nav-cta">Order Now</a></li>
+  </ul>
+  <button id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">South Africa's Street Food Crown</div>
+    <h1 class="hero-title">
+      <span class="hero-title-line1">Kota.</span>
+      <span class="hero-title-line2">Loaded.</span>
+      <span class="hero-title-line3">The Street Food Revolution</span>
+    </h1>
+    <p class="hero-subtitle">The kota isn't just food — it's a vibe, a culture, a lifestyle. Packed with more attitude than any gourmet restaurant could handle. Scroll down and watch us explode.</p>
+    <div class="hero-ctas">
+      <a href="#menu" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        See The Menu
+      </a>
+      <a href="#scroll-anim" class="btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Watch The Explosion
+      </a>
+    </div>
+    <div class="scroll-hint" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
+      <span class="scroll-hint-text">Scroll to discover</span>
+      <div class="scroll-hint-arrow">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLL ANIMATION SECTION -->
+<section id="scroll-anim">
+  <div id="scroll-anim-sticky">
+    <div class="scroll-bg-text">KOTA</div>
+    <canvas id="frame-canvas"></canvas>
+
+    <!-- Annotation Cards -->
+    <div class="annotation-card card-left card-top" data-show="0.05" data-hide="0.2" id="card-1">
+      <div class="card-number">01 / ingredient</div>
+      <div class="card-accent-line" style="background: linear-gradient(90deg, var(--accent), transparent);"></div>
+      <div class="card-title">The Kota Bread</div>
+      <div class="card-desc">A full kota — hollowed white loaf, toasted golden. The vessel of legends.</div>
+      <div class="card-stat">
+        <span class="card-stat-num">¼</span>
+        <span class="card-stat-label">LOAF / PACKED</span>
+      </div>
+    </div>
+
+    <div class="annotation-card card-right card-top" data-show="0.2" data-hide="0.4" id="card-2">
+      <div class="card-number">02 / ingredient</div>
+      <div class="card-accent-line" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-title">The Protein Stack</div>
+      <div class="card-desc">Beef patty + fried egg + polony + Russians. No compromises. No holding back.</div>
+      <div class="card-stat">
+        <span class="card-stat-num">4</span>
+        <span class="card-stat-label">PROTEINS LAYERED</span>
+      </div>
+    </div>
+
+    <div class="annotation-card card-left card-mid" data-show="0.4" data-hide="0.6" id="card-3">
+      <div class="card-number">03 / ingredient</div>
+      <div class="card-accent-line" style="background: linear-gradient(90deg, #F5C842, transparent);"></div>
+      <div class="card-title">The Cheese Pull</div>
+      <div class="card-desc">Double American cheese melted to liquid gold. That drip is the whole point.</div>
+      <div class="card-stat">
+        <span class="card-stat-num">2×</span>
+        <span class="card-stat-label">CHEESE SLICES</span>
+      </div>
+    </div>
+
+    <div class="annotation-card card-right card-mid" data-show="0.6" data-hide="0.8" id="card-4">
+      <div class="card-number">04 / ingredient</div>
+      <div class="card-accent-line" style="background: linear-gradient(90deg, var(--accent), transparent);"></div>
+      <div class="card-title">The Crunch Base</div>
+      <div class="card-desc">Slap chips, vetkoek, and amagwinya chips at the base. Texture every single bite.</div>
+      <div class="card-stat">
+        <span class="card-stat-num">R65</span>
+        <span class="card-stat-label">FULLY LOADED</span>
+      </div>
+    </div>
+
+    <div class="annotation-card card-left card-bottom" data-show="0.8" data-hide="1.0" id="card-5">
+      <div class="card-number">05 / sauce</div>
+      <div class="card-accent-line" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-title">The Secret Sauce</div>
+      <div class="card-desc">Our in-house kota sauce. Recipe classified. Taste unforgettable.</div>
+      <div class="card-stat">
+        <span class="card-stat-num">🔥</span>
+        <span class="card-stat-label">SIGNATURE DRIP</span>
+      </div>
+    </div>
+
+    <div class="section-label" id="scroll-label">SCROLL TO BUILD YOUR KOTA</div>
+  </div>
+</section>
+
+<!-- MENU SECTION -->
+<section id="menu">
+  <div class="section-header reveal">
+    <span class="section-eyebrow">// The Menu</span>
+    <h2 class="section-title">Pick Your <span>Kota</span></h2>
+    <p class="section-subtitle">Every kota is a masterpiece. Built from the bottom up. No fillers, no shortcuts — just pure street food glory.</p>
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card reveal reveal-delay-1">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Classic Kota" class="menu-card-img">
+        <span class="menu-card-badge">Fan Fave</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">The Classic</div>
+        <div class="menu-card-desc">Polony, chips, fried egg, cheese, our kota sauce. The original legend that started it all. No explanation needed.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R35 <span>/ kota</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card reveal reveal-delay-2">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&q=80" alt="Big Boy Kota" class="menu-card-img">
+        <span class="menu-card-badge" style="background: #FF4444; color: white;">🔥 Hot</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">The Big Boy</div>
+        <div class="menu-card-desc">Beef patty + 2 eggs + polony + Russian + double cheese + lettuce + our fire sauce. Bring your appetite.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R65 <span>/ kota</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card reveal reveal-delay-3">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1550317138-10000687a72b?w=600&q=80" alt="Veggie Kota" class="menu-card-img">
+        <span class="menu-card-badge" style="background: var(--green); color: #000;">🌿 Veggie</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">The Green Wave</div>
+        <div class="menu-card-desc">Spiced chickpea patty, grilled halloumi, fried egg, avocado, our green sauce. For the conscious kota heads.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R55 <span>/ kota</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card reveal reveal-delay-1">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1585507252242-11fe632c26e8?w=600&q=80" alt="Chips side" class="menu-card-img">
+        <span class="menu-card-badge" style="background: #7A9E7E; color: #000;">Side</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">Slap Chips</div>
+        <div class="menu-card-desc">Salt + vinegar limp chips. That satisfying slap texture. Served with sriracha mayo or tomato sauce.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R20 <span>/ portion</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card reveal reveal-delay-2">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=600&q=80" alt="Cooldrink" class="menu-card-img">
+        <span class="menu-card-badge" style="background: #E84040; color: #fff;">Drink</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">The Wash</div>
+        <div class="menu-card-desc">Cream soda, Fanta grape, Coke, or our in-house ginger beer. Ice cold. Non-negotiable side.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R15 <span>/ can</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card reveal reveal-delay-3">
+      <div class="menu-card-img-wrapper">
+        <img src="https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80" alt="Special" class="menu-card-img">
+        <span class="menu-card-badge" style="background: linear-gradient(135deg, var(--accent), var(--green)); color: #000;">New 🔑</span>
+      </div>
+      <div class="menu-card-content">
+        <div class="menu-card-name">The Kota Combo</div>
+        <div class="menu-card-desc">Any kota + slap chips + a cold drink. The complete experience. The only correct order.</div>
+        <div class="menu-card-footer">
+          <div class="menu-card-price">R75 <span>/ combo</span></div>
+          <button class="menu-card-btn" aria-label="Add to order">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS SECTION -->
+<section id="specs">
+  <div class="specs-grid">
+    <div class="spec-item reveal">
+      <span class="spec-number" data-target="7" data-suffix="+">0+</span>
+      <div class="spec-label">Locations</div>
+      <div class="spec-desc">across SA townships</div>
+    </div>
+    <div class="spec-item reveal reveal-delay-1">
+      <span class="spec-number" data-target="500" data-suffix="+">0+</span>
+      <div class="spec-label">Daily Orders</div>
+      <div class="spec-desc">every single day</div>
+    </div>
+    <div class="spec-item reveal reveal-delay-2">
+      <span class="spec-number" data-target="12" data-suffix=" layers">0 layers</span>
+      <div class="spec-label">Max Layers</div>
+      <div class="spec-desc">in the Big Boy kota</div>
+    </div>
+    <div class="spec-item reveal reveal-delay-3">
+      <span class="spec-number" data-target="1994" data-suffix="">0</span>
+      <div class="spec-label">Since</div>
+      <div class="spec-desc">township legend since day 1</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section id="features">
+  <div class="section-header reveal">
+    <span class="section-eyebrow">// Why Kota Store?</span>
+    <h2 class="section-title">This Is The <span>Way</span></h2>
+    <p class="section-subtitle">We didn't invent the kota. We just took it seriously enough to give it the spotlight it deserves.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">🍞</div>
+      <div class="feature-title">Real Bread, Real Base</div>
+      <div class="feature-desc">We use locally sourced white loaves from township bakeries. No artisan sourdough nonsense — just the real thing that built a culture.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">🔥</div>
+      <div class="feature-title">Built-to-Order Heat</div>
+      <div class="feature-desc">Every kota is assembled fresh on order. Nothing sits under heat lamps. The cheese pull is always live. The chips are always crisp.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-title">Township Roots</div>
+      <div class="feature-desc">Born in the townships of Soweto, spread across SA. The kota tells the true story of South African street food culture — no gatekeeping.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">💳</div>
+      <div class="feature-title">Pay Any Way</div>
+      <div class="feature-desc">Cash, card, SnapScan, Zapper. We meet you where you are. No card machine "off" nonsense. Always ready to receive.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">📍</div>
+      <div class="feature-title">Spread the Culture</div>
+      <div class="feature-desc">Multiple locations across the metro area and growing. We're bringing the kota to every corner — franchise opportunities coming soon.</div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Fast Like Lightning</div>
+      <div class="feature-desc">Under 5 minutes. That's the standard. You don't have time to wait — we don't have time to be slow. Efficiency is part of the culture.</div>
+    </div>
+  </div>
+</section>
+
+<!-- kULTURE SECTION -->
+<section id="kulture">
+  <div class="section-header reveal">
+    <span class="section-eyebrow">// The kULTURE</span>
+    <h2 class="section-title">More Than <span>Food</span></h2>
+    <p class="section-subtitle">The kota is the heartbeat of the township. When you order, you're part of something bigger.</p>
+  </div>
+
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Kota Bread <span>✦</span></span>
+      <span class="marquee-item">Polony Stack <span>✦</span></span>
+      <span class="marquee-item">Cheese Pull <span>✦</span></span>
+      <span class="marquee-item">Slap Chips <span>✦</span></span>
+      <span class="marquee-item">Street Culture <span>✦</span></span>
+      <span class="marquee-item">Township Flavor <span>✦</span></span>
+      <span class="marquee-item">SA Iconic <span>✦</span></span>
+      <span class="marquee-item">Kota Bread <span>✦</span></span>
+      <span class="marquee-item">Polony Stack <span>✦</span></span>
+      <span class="marquee-item">Cheese Pull <span>✦</span></span>
+      <span class="marquee-item">Slap Chips <span>✦</span></span>
+      <span class="marquee-item">Street Culture <span>✦</span></span>
+      <span class="marquee-item">Township Flavor <span>✦</span></span>
+      <span class="marquee-item">SA Iconic <span>✦</span></span>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <div class="culture-gallery">
+    <div class="gallery-col">
+      <div class="gallery-img tall reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" alt="Street food culture">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">The Streets</span></div>
+      </div>
+      <div class="gallery-img short reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=500&q=80" alt="Township vibes">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">Township Vibes</span></div>
+      </div>
+    </div>
+    <div class="gallery-col">
+      <div class="gallery-img short reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1484723091739-30990f19e472?w=500&q=80" alt="Food prep">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">Craft</span></div>
+      </div>
+      <div class="gallery-img tall reveal reveal-delay-3">
+        <img src="https://images.unsplash.com/photo-1561043433-aaf687c4cf04?w=500&q=80" alt="Cheese pull">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">The Pull</span></div>
+      </div>
+    </div>
+    <div class="gallery-col">
+      <div class="gallery-img wide reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&q=80" alt="The queue">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">The Queue Never Lies</span></div>
+      </div>
+      <div class="gallery-img wide reveal reveal-delay-4">
+        <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&q=80" alt="Custom kota">
+        <div class="gallery-img-overlay"><span class="gallery-img-label">Custom Build</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-content reveal">
+    <span class="cta-eyebrow">// Don't Wait</span>
+    <h2 class="cta-title">Hungry Now?<br><span>We Got You.</span></h2>
+    <p class="cta-subtitle">Pull up to your nearest Kota Store or pre-order for pickup. The kota waits for no one — but we'll have yours ready in 5.</p>
+    <div class="cta-buttons">
+      <a href="#menu" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Find Nearest Store
+      </a>
+      <a href="tel:+0800KOTA" class="btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 0174 2.18 2 2 0 013 4.18v3a2 2 0 01-1.18.45 15.85 15.85 0 00-8.4 8.4A2 2 0 0116.92 22z"/></svg>
+        Call Ahead
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <span class="section-eyebrow">// What The People Say</span>
+    <h2 class="section-title">Real Talk, <span>No Cap</span></h2>
+    <p class="section-subtitle">We let the kota speak for itself. Here's what the streets are saying.</p>
+  </div>
+  <div class="testimonials-track-wrapper" id="testimonials-wrapper">
+    <div class="testimonials-track" id="testimonials-track">
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"Bro walked in with R65 and walked out with a religious experience. The Big Boy had me calling my mom. Send help."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">TM</div>
+          <div>
+            <div class="testimonial-name">Thabiso M.</div>
+            <div class="testimonial-location">Soweto, Jozi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"The cheese pull alone is worth the trip. I took a video and it lives rent-free in my camera roll. Kota Store ate and left no crumbs."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">KN</div>
+          <div>
+            <div class="testimonial-name">Khanyi N.</div>
+            <div class="testimonial-location">Tembisa, Ekurhuleni</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"I brought my cousins from Cape Town and now they won't stop crying about how we don't have this locally. This is genuinely a problem."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SZ</div>
+          <div>
+            <div class="testimonial-name">Sipho Z.</div>
+            <div class="testimonial-location">Gugulethu, CPT</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"Five mins flat. The queue was ten deep and I still had my kota before my notification finished loading. Speed is unmatched frfr."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">LM</div>
+          <div>
+            <div class="testimonial-name">Lerato M.</div>
+            <div class="testimonial-location">Alex, Jozi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"The veggie kota (Green Wave) slaps different. I'm not even vegetarian but I ordered it twice in the same day. No regrets at all."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">BN</div>
+          <div>
+            <div class="testimonial-name">Bongiwe N.</div>
+            <div class="testimonial-location">Kwamashu, Durban</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="testimonial-text">"This is the glow-up our township deserved. Premium but still us. The branding, the taste, the energy — everything 10/10."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">DK</div>
+          <div>
+            <div class="testimonial-name">Dineo K.</div>
+            <div class="testimonial-location">Mamelodi, Pretoria</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION SECTION -->
+<section id="location">
+  <div class="section-header reveal">
+    <span class="section-eyebrow">// Find Us</span>
+    <h2 class="section-title">Come <span>Through</span></h2>
+    <p class="section-subtitle">Pull up to Carlswald, Midrand. Open daily — no reservation, just bring your appetite.</p>
+  </div>
+
+  <div class="location-container">
+    <div class="location-info">
+      <div class="location-detail">
+        <div class="location-detail-icon">📍</div>
+        <div>
+          <div class="location-detail-label">Address</div>
+          <div class="location-detail-value">60 Snapdragon Street<br>Carlswald, Midrand<br>Gauteng, South Africa</div>
+        </div>
+      </div>
+      <div class="location-detail">
+        <div class="location-detail-icon">🕐</div>
+        <div>
+          <div class="location-detail-label">Hours</div>
+          <div class="location-detail-value">Monday – Sunday<br>08:00 – 22:00</div>
+        </div>
+      </div>
+      <div class="location-detail">
+        <div class="location-detail-icon">📞</div>
+        <div>
+          <div class="location-detail-label">Phone</div>
+          <div class="location-detail-value"><a href="tel:+27800KOTA" style="color:var(--accent);text-decoration:none;">0800 KOTA</a></div>
+        </div>
+      </div>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=60+Snapdragon+St,+Carlswald,+Midrand,+South+Africa" target="_blank" rel="noopener noreferrer" class="location-directions">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Get Directions
+      </a>
+    </div>
+    <div class="location-map">
+      <iframe
+        src="https://maps.google.com/maps?q=60+Snapdragon+St,+Carlswald,+Midrand,+South+Africa&output=embed&z=16"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Kota Store — 60 Snapdragon St, Carlswald, Midrand"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">
+        <img src="images/logo.png" alt="Kota Store">
+        <span class="footer-logo-text">Kota Store</span>
+      </a>
+      <p class="footer-tagline">The Street Food Revolution. Born in the township. Built for everyone. Loading, always.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn" aria-label="Instagram">📷</a>
+        <a href="#" class="social-btn" aria-label="TikTok">🎵</a>
+        <a href="#" class="social-btn" aria-label="Twitter">🐦</a>
+        <a href="#" class="social-btn" aria-label="WhatsApp">💬</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Menu</div>
+      <ul class="footer-links">
+        <li><a href="#menu">The Classic</a></li>
+        <li><a href="#menu">The Big Boy</a></li>
+        <li><a href="#menu">The Green Wave</a></li>
+        <li><a href="#menu">Combos</a></li>
+        <li><a href="#menu">Sides & Drinks</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">About</div>
+      <ul class="footer-links">
+        <li><a href="#features">Our Story</a></li>
+        <li><a href="#culture">The Culture</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#">Franchise Info</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Find Us</div>
+      <ul class="footer-links">
+        <li><a href="#location">60 Snapdragon St</a></li>
+        <li><a href="#location">Carlswald, Midrand</a></li>
+        <li><a href="#location">Mon–Sun: 08:00–22:00</a></li>
+        <li><a href="https://www.google.com/maps/dir/?api=1&destination=60+Snapdragon+St,+Carlswald,+Midrand,+South+Africa" target="_blank" rel="noopener noreferrer">Get Directions →</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <span>Kota Store</span> — The Street Food Revolution</div>
+    <div class="footer-love">Made with ❤️ for the townships</div>
+  </div>
+</footer>
+
+<!-- ORDER MODAL -->
+<div id="order-modal" class="order-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+  <div class="order-modal">
+    <button class="order-modal-close" id="order-modal-close" aria-label="Close modal">
+      <svg viewBox="0 0 24 24" fill="none"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.5"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.5"/></svg>
+    </button>
+    <div class="order-modal-img-wrap">
+      <img id="modal-img" src="" alt="" class="order-modal-img">
+      <span class="order-modal-badge" id="modal-badge"></span>
+    </div>
+    <div class="order-modal-body">
+      <div class="order-modal-eyebrow">// Quick Order</div>
+      <h3 class="order-modal-name" id="modal-name"></h3>
+      <p class="order-modal-desc" id="modal-desc"></p>
+      <div class="order-modal-price-row">
+        <span class="order-modal-base-price" id="modal-base-price"></span>
+        <span class="order-modal-per">per item</span>
+      </div>
+
+      <div class="order-section-label">Quantity</div>
+      <div class="order-qty-row">
+        <button class="order-qty-btn" id="qty-minus" type="button">−</button>
+        <span class="order-qty-val" id="qty-val">1</span>
+        <button class="order-qty-btn" id="qty-plus" type="button">+</button>
+      </div>
+
+      <div class="order-section-label">Add Extras</div>
+      <div class="order-extras">
+        <label class="order-extra-item">
+          <input type="checkbox" class="extra-check" data-price="10">
+          <span class="extra-name">Extra Cheese</span>
+          <span class="extra-price">+R10</span>
+        </label>
+        <label class="order-extra-item">
+          <input type="checkbox" class="extra-check" data-price="20">
+          <span class="extra-name">Slap Chips</span>
+          <span class="extra-price">+R20</span>
+        </label>
+        <label class="order-extra-item">
+          <input type="checkbox" class="extra-check" data-price="15">
+          <span class="extra-name">Cold Drink</span>
+          <span class="extra-price">+R15</span>
+        </label>
+        <label class="order-extra-item">
+          <input type="checkbox" class="extra-check" data-price="8">
+          <span class="extra-name">Spicy Kota Sauce</span>
+          <span class="extra-price">+R8</span>
+        </label>
+      </div>
+
+      <div class="order-section-label">Special Instructions</div>
+      <textarea class="order-notes" placeholder="e.g. no cheese, extra spicy, no onion..."></textarea>
+
+      <div class="order-total-row">
+        <span class="order-total-label">Total</span>
+        <span class="order-total-val" id="modal-total">R0</span>
+      </div>
+      <button class="order-submit-btn" id="order-submit" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Add to Order
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button id="scroll-top" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- ========================
+     JAVASCRIPT
+======================== -->
+<script>
+// ========================
+// STARSCAPE
+// ========================
+(function() {
+  const canvas = document.getElementById('starscape');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.3,
+        driftX: (Math.random() - 0.5) * 0.15,
+        driftY: (Math.random() - 0.5) * 0.1,
+        twinkleSpeed: Math.random() * 0.02 + 0.005,
+        twinklePhase: Math.random() * Math.PI * 2,
+        baseOpacity: Math.random() * 0.5 + 0.1,
+      });
+    }
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 1;
+    stars.forEach(s => {
+      s.x += s.driftX;
+      s.y += s.driftY;
+      if (s.x < 0) s.x = W;
+      if (s.x > W) s.x = 0;
+      if (s.y < 0) s.y = H;
+      if (s.y > H) s.y = 0;
+      const opacity = s.baseOpacity + Math.sin(t * s.twinkleSpeed + s.twinklePhase) * 0.3;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(13,13,13,${Math.max(0, opacity * 0.35)})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); initStars(); }, { passive: true });
+  resize();
+  initStars();
+  draw();
+})();
+
+
+// ========================
+// FRAME PRELOADER & SCROLL ANIMATION
+// ========================
+(function () {
+  'use strict';
+
+  // CRITICAL: declare currentFrame BEFORE resizeCanvas() — avoids TDZ crash
+  var FRAME_COUNT = 120;
+  var frames = new Array(FRAME_COUNT);
+  var loadedCount = 0;
+  var currentFrame = 0;   // must be before resizeCanvas
+  var canvasW = 0, canvasH = 0;
+  var rafPending = false;
+
+  var canvas   = document.getElementById('frame-canvas');
+  var ctx      = canvas.getContext('2d');
+  var loaderEl = document.getElementById('loader');
+  var loaderBar= document.getElementById('loader-bar');
+  var loaderTxt= document.getElementById('loader-text');
+  var progEl   = document.getElementById('scroll-progress');
+  var topBtn   = document.getElementById('scroll-top');
+  var navbar   = document.getElementById('navbar');
+  var section  = document.getElementById('scroll-anim');
+  var sticky   = document.getElementById('scroll-anim-sticky');
+  var annCards = document.querySelectorAll('.annotation-card');
+  var scrollLabel = document.getElementById('scroll-label');
+
+  // ── Canvas sizing & drawing ─────────────────────────
+  function resizeCanvas() {
+    canvasW = window.innerWidth;
+    canvasH = window.innerHeight;
+    canvas.width  = canvasW;
+    canvas.height = canvasH;
+    drawFrame(currentFrame);
+  }
+
+  function drawFrame(index) {
+    var img = frames[index];
+    if (!img || !canvasW) return;
+    var iw  = img.naturalWidth  || 1280;
+    var ih  = img.naturalHeight || 720;
+    var cw  = canvas.width;
+    var ch  = canvas.height;
+    // Portrait screens (phones upright): contain — show full explosion, no cropping
+    // Landscape screens (desktop/tablet): cover — fill viewport edge-to-edge
+    var portrait = ch > cw;
+    var scale = portrait
+      ? Math.min(cw / iw, ch / ih)
+      : Math.max(cw / iw, ch / ih);
+    var dw = iw * scale, dh = ih * scale;
+    var dx = (cw - dw) / 2,  dy = (ch - dh) / 2;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+
+  // ── IntersectionObserver: show/hide fixed panel ──────
+  // When the spacer scrolls into view → add .sh-active (fade in)
+  // When it leaves → remove .sh-active (fade out)
+  var io = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      sticky.classList.add('sh-active');
+    } else {
+      sticky.classList.remove('sh-active');
+      annCards.forEach(function(c) { c.classList.remove('visible'); });
+    }
+  }, { threshold: 0 });
+  io.observe(section);
+
+  // ── Attach scroll listener immediately ───────────────
+  // drawFrame() safely no-ops until images load
+  var scrollProg = 0;
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // ── Frame preload ─────────────────────────────────────
+  for (var i = 0; i < FRAME_COUNT; i++) {
+    (function(idx) {
+      var img = new Image();
+      img.src = 'frames/frame_' + String(idx + 1).padStart(4, '0') + '.jpg';
+      img.onload = function() {
+        frames[idx] = img;
+        loadedCount++;
+        var pct = Math.round((loadedCount / FRAME_COUNT) * 100);
+        loaderBar.style.width = pct + '%';
+        loaderTxt.textContent = 'Loading ' + pct + '%';
+        if (loadedCount === 1) drawFrame(0); // show frame immediately when first arrives
+        if (loadedCount === FRAME_COUNT) onAllLoaded();
+      };
+      img.onerror = function() {
+        loadedCount++;
+        if (loadedCount === FRAME_COUNT) onAllLoaded();
+      };
+    })(i);
+  }
+
+  function onAllLoaded() {
+    loaderTxt.textContent = 'Ready to explode \uD83D\uDD25';
+    loaderBar.style.width = '100%';
+    setTimeout(function() {
+      loaderEl.classList.add('hidden');
+      if (scrollLabel) scrollLabel.classList.add('visible');
+      drawFrame(0);
+      window.dispatchEvent(new Event('scroll'));
+    }, 500);
+  }
+
+  // ── Scroll → frame mapping ────────────────────────────
+  function onScroll() {
+    // Global progress bar
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    progEl.style.transform = 'scaleX(' + (window.scrollY / docH) + ')';
+
+    if (window.scrollY > 400) topBtn.classList.add('visible');
+    else topBtn.classList.remove('visible');
+
+    if (window.scrollY > 80) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+
+    // -rect.top = how far the section top has scrolled above the viewport
+    var rect     = section.getBoundingClientRect();
+    var sectionH = section.offsetHeight - window.innerHeight;
+    scrollProg = Math.max(0, Math.min(1, -rect.top / sectionH));
+
+    if (!rafPending) { rafPending = true; requestAnimationFrame(render); }
+  }
+
+  function render() {
+    rafPending = false;
+    var p        = scrollProg;
+    var frameIdx = Math.min(FRAME_COUNT - 1, Math.floor(p * FRAME_COUNT));
+
+    if (frameIdx !== currentFrame) {
+      currentFrame = frameIdx;
+      drawFrame(currentFrame);
+    }
+
+    annCards.forEach(function(card) {
+      var show = parseFloat(card.dataset.show);
+      var hide = parseFloat(card.dataset.hide);
+      if (p >= show && p < hide) card.classList.add('visible');
+      else card.classList.remove('visible');
+    });
+  }
+
+  // ── Reveal on scroll ──────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ── Count-up animation ────────────────────────────────
+  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+  let countedUp = false;
+
+  function runCountUp() {
+    if (countedUp) return;
+    countedUp = true;
+    document.querySelectorAll('.spec-number[data-target]').forEach((el, i) => {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1800;
+      const startTime = performance.now() + i * 200;
+      el.classList.add('counting');
+      function step(now) {
+        const elapsed = Math.max(0, now - startTime);
+        const t = Math.min(1, elapsed / duration);
+        el.textContent = Math.round(easeOutExpo(t) * target) + suffix;
+        if (t < 1) requestAnimationFrame(step);
+        else { el.textContent = target + suffix; el.classList.remove('counting'); }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  const specsIO = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) runCountUp();
+  }, { threshold: 0.3 });
+  const specsSection = document.getElementById('specs');
+  if (specsSection) specsIO.observe(specsSection);
+
+  // ── Testimonials drag scroll ──────────────────────────
+  const wrapper = document.getElementById('testimonials-wrapper');
+  if (wrapper) {
+    let isDragging = false, startX = 0, scrollLeft = 0;
+    wrapper.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.pageX - wrapper.offsetLeft;
+      scrollLeft = wrapper.scrollLeft;
+      wrapper.style.cursor = 'grabbing';
+    });
+    wrapper.addEventListener('mouseleave', () => { isDragging = false; wrapper.style.cursor = 'grab'; });
+    wrapper.addEventListener('mouseup', () => { isDragging = false; wrapper.style.cursor = 'grab'; });
+    wrapper.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      e.preventDefault();
+      wrapper.scrollLeft = scrollLeft - (e.pageX - wrapper.offsetLeft - startX) * 1.5;
+    });
+    wrapper.addEventListener('touchstart', e => {
+      startX = e.touches[0].pageX;
+      scrollLeft = wrapper.scrollLeft;
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', e => {
+      wrapper.scrollLeft = scrollLeft + (startX - e.touches[0].pageX) * 1.2;
+    }, { passive: true });
+  }
+
+})();
+
+// ========================
+// ORDER MODAL
+// ========================
+(function() {
+  var overlay  = document.getElementById('order-modal');
+  var closeBtn = document.getElementById('order-modal-close');
+  var modalImg = document.getElementById('modal-img');
+  var modalBadge = document.getElementById('modal-badge');
+  var modalName  = document.getElementById('modal-name');
+  var modalDesc  = document.getElementById('modal-desc');
+  var modalBasePriceEl = document.getElementById('modal-base-price');
+  var modalTotalEl = document.getElementById('modal-total');
+  var qtyValEl = document.getElementById('qty-val');
+  var qtyMinus = document.getElementById('qty-minus');
+  var qtyPlus  = document.getElementById('qty-plus');
+  var submitBtn = document.getElementById('order-submit');
+  var extraChecks = document.querySelectorAll('.extra-check');
+  var origBtnHTML = submitBtn.innerHTML;
+
+  var basePrice = 0;
+  var qty = 1;
+
+  function calcTotal() {
+    var extras = 0;
+    extraChecks.forEach(function(c) {
+      if (c.checked) extras += parseInt(c.dataset.price, 10);
+    });
+    return (basePrice + extras) * qty;
+  }
+
+  function updateTotal() {
+    modalTotalEl.textContent = 'R' + calcTotal();
+  }
+
+  function openModal(card) {
+    var match = card.querySelector('.menu-card-price').textContent.match(/\d+/);
+    basePrice = match ? parseInt(match[0], 10) : 0;
+    qty = 1;
+
+    var imgEl = card.querySelector('.menu-card-img');
+    var badgeEl = card.querySelector('.menu-card-badge');
+    modalImg.src = imgEl ? imgEl.src : '';
+    modalImg.alt = imgEl ? imgEl.alt : '';
+    if (badgeEl) {
+      modalBadge.textContent = badgeEl.textContent;
+      modalBadge.setAttribute('style', badgeEl.getAttribute('style') || '');
+    } else {
+      modalBadge.textContent = '';
+    }
+    modalName.textContent = card.querySelector('.menu-card-name').textContent;
+    modalDesc.textContent = card.querySelector('.menu-card-desc').textContent;
+    modalBasePriceEl.textContent = 'R' + basePrice;
+    qtyValEl.textContent = '1';
+    extraChecks.forEach(function(c) { c.checked = false; });
+    document.querySelector('.order-notes').value = '';
+    submitBtn.innerHTML = origBtnHTML;
+    submitBtn.classList.remove('success');
+    submitBtn.disabled = false;
+    updateTotal();
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.menu-card').forEach(function(card) {
+    card.addEventListener('click', function() { openModal(card); });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  qtyMinus.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (qty > 1) { qty--; qtyValEl.textContent = qty; updateTotal(); }
+  });
+  qtyPlus.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (qty < 10) { qty++; qtyValEl.textContent = qty; updateTotal(); }
+  });
+
+  extraChecks.forEach(function(c) {
+    c.addEventListener('change', updateTotal);
+  });
+
+  submitBtn.addEventListener('click', function() {
+    var total = calcTotal();
+    submitBtn.textContent = '✓ ADDED TO ORDER — R' + total;
+    submitBtn.classList.add('success');
+    submitBtn.disabled = true;
+    setTimeout(closeModal, 1800);
+  });
+})();
+
+/* ── Hamburger nav toggle ─────────────────────────────────── */
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var navLinks = document.querySelector('.nav-links');
+  if (!toggle) return;
+  toggle.addEventListener('click', function() {
+    var open = document.body.classList.toggle('nav-open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      document.body.classList.remove('nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  // Close on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.body.classList.contains('nav-open')) {
+      document.body.classList.remove('nav-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+})();
+</script>
+</body>
+</html>
