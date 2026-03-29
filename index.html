@@ -543,6 +543,8 @@ body {
   display: block;
   mix-blend-mode: multiply;
   z-index: 1;
+  will-change: contents;
+  transform: translateZ(0);
 }
 
 /* Decorative large background text behind animation */
@@ -2002,6 +2004,11 @@ body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
 
 /* ── 768 px — tablet portrait / large phone ─────────────── */
 @media (max-width: 768px) {
+  /* Remove expensive GPU compositing on mobile */
+  #frame-canvas { mix-blend-mode: normal; }
+  /* KOTA bg text only makes sense with blend mode */
+  .scroll-bg-text { display: none; }
+
   #hero { padding: 0 24px; }
   .hero-badge { font-size: 0.75rem; padding: 7px 16px; }
   .hero-ctas { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -2850,6 +2857,7 @@ body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
   var currentFrame = 0;   // must be before resizeCanvas
   var canvasW = 0, canvasH = 0;
   var rafPending = false;
+  var isMobile = window.innerWidth <= 768;
 
   var canvas   = document.getElementById('frame-canvas');
   var ctx      = canvas.getContext('2d');
@@ -2864,25 +2872,34 @@ body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
   var annCards = document.querySelectorAll('.annotation-card');
   var scrollLabel = document.getElementById('scroll-label');
 
-  // ── Canvas: cover-fit fills viewport edge-to-edge ────
+  // ── Canvas: cover on desktop, contain on mobile ────
   function resizeCanvas() {
+    isMobile = window.innerWidth <= 768;
     canvasW = window.innerWidth;
     canvasH = window.innerHeight;
-    canvas.width  = canvasW;
-    canvas.height = canvasH;
+    // Mobile: draw at 70% internal resolution — CSS stretches it back up
+    // (slightly softer image, but ~2× faster to composite on mobile GPUs)
+    var res = isMobile ? 0.7 : 1;
+    canvas.width  = Math.round(canvasW * res);
+    canvas.height = Math.round(canvasH * res);
     drawFrame(currentFrame);
   }
 
-  // Cover-fit: scale so video fills the whole viewport (crops edges if needed)
   function drawFrame(index) {
     var img = frames[index];
     if (!img || !canvasW) return;
-    var iw    = img.naturalWidth  || 1280;
-    var ih    = img.naturalHeight || 720;
-    var scale = Math.max(canvasW / iw, canvasH / ih);
+    var iw  = img.naturalWidth  || 1280;
+    var ih  = img.naturalHeight || 720;
+    var cw  = canvas.width;
+    var ch  = canvas.height;
+    // Mobile: contain (show full explosion, no cropping)
+    // Desktop: cover (fill viewport edge-to-edge)
+    var scale = isMobile
+      ? Math.min(cw / iw, ch / ih)
+      : Math.max(cw / iw, ch / ih);
     var dw = iw * scale, dh = ih * scale;
-    var dx = (canvasW - dw) / 2, dy = (canvasH - dh) / 2;
-    ctx.clearRect(0, 0, canvasW, canvasH);
+    var dx = (cw - dw) / 2,  dy = (ch - dh) / 2;
+    ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(img, dx, dy, dw, dh);
   }
 
