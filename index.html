@@ -1958,6 +1958,146 @@ body.nav-open #nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(
 body.nav-open #nav-toggle span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* ════════════════════════════════════════════════════
+   PORTRAIT MOBILE — scroll section chrome
+   Fills the blank top & bottom areas when using contain
+════════════════════════════════════════════════════ */
+.mob-top-brand,
+.mob-scroll-card,
+.mob-order-cta { display: none; }
+
+@media (orientation: portrait) and (max-width: 768px) {
+
+  /* ── Top branding ── */
+  .mob-top-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 30%;
+    z-index: 10;
+    padding-bottom: 16px;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+  }
+  .mob-brand-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--accent);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+  .mob-brand-name {
+    font-family: var(--font-head);
+    font-weight: 900;
+    line-height: 0.86;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+  .mob-brand-kota {
+    display: block;
+    font-size: clamp(3.5rem, 22vw, 5.8rem);
+    color: var(--accent);
+  }
+  .mob-brand-store {
+    display: block;
+    font-size: clamp(1.4rem, 9vw, 2.4rem);
+    color: var(--text);
+    letter-spacing: 0.22em;
+  }
+
+  /* ── Scroll-synced info tiles (bottom area) ── */
+  .mob-scroll-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30%;
+    z-index: 10;
+    padding: 0 28px 16px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .mob-scroll-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .mob-card-num {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--accent);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .mob-card-rule {
+    height: 2px;
+    width: 44px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    border-radius: 1px;
+    margin-bottom: 8px;
+  }
+  .mob-card-title {
+    font-family: var(--font-head);
+    font-size: clamp(1.4rem, 6.5vw, 1.9rem);
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .mob-card-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: var(--font-head);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .mob-card-stat span {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    font-weight: 400;
+  }
+
+  /* ── Order CTA at animation end ── */
+  .mob-order-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 30%;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .mob-order-cta.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .mob-order-cta .btn-primary {
+    padding: 16px 44px;
+    font-size: 1rem;
+    width: auto;
+  }
+}
+
 /* ── 1024 px — tablet landscape ───────────────────────── */
 @media (max-width: 1024px) {
   .features-grid { grid-template-columns: 1fr 1fr; }
@@ -2244,6 +2384,50 @@ body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
         <span class="card-stat-num">🔥</span>
         <span class="card-stat-label">SIGNATURE DRIP</span>
       </div>
+    </div>
+
+    <!-- Mobile portrait: branding fills top blank area above animation -->
+    <div class="mob-top-brand">
+      <div class="mob-brand-eyebrow">South Africa's Street Food Crown</div>
+      <div class="mob-brand-name">
+        <span class="mob-brand-kota">Kota</span>
+        <span class="mob-brand-store">Store</span>
+      </div>
+    </div>
+
+    <!-- Mobile portrait: scroll-synced info tiles in bottom blank area -->
+    <div class="mob-scroll-card" data-show="0.0" data-hide="0.18">
+      <div class="mob-card-num">01 / ingredient</div>
+      <div class="mob-card-rule"></div>
+      <div class="mob-card-title">The Kota Bread</div>
+      <div class="mob-card-stat">¼ <span>LOAF / PACKED</span></div>
+    </div>
+    <div class="mob-scroll-card" data-show="0.18" data-hide="0.36">
+      <div class="mob-card-num">02 / ingredient</div>
+      <div class="mob-card-rule"></div>
+      <div class="mob-card-title">The Protein Stack</div>
+      <div class="mob-card-stat">4 <span>PROTEINS LAYERED</span></div>
+    </div>
+    <div class="mob-scroll-card" data-show="0.36" data-hide="0.54">
+      <div class="mob-card-num">03 / ingredient</div>
+      <div class="mob-card-rule"></div>
+      <div class="mob-card-title">The Cheese Pull</div>
+      <div class="mob-card-stat">2× <span>CHEESE SLICES</span></div>
+    </div>
+    <div class="mob-scroll-card" data-show="0.54" data-hide="0.72">
+      <div class="mob-card-num">04 / ingredient</div>
+      <div class="mob-card-rule"></div>
+      <div class="mob-card-title">The Crunch Base</div>
+      <div class="mob-card-stat">R65 <span>FULLY LOADED</span></div>
+    </div>
+    <div class="mob-scroll-card" data-show="0.72" data-hide="0.9">
+      <div class="mob-card-num">05 / sauce</div>
+      <div class="mob-card-rule"></div>
+      <div class="mob-card-title">The Secret Sauce</div>
+      <div class="mob-card-stat">🔥 <span>SIGNATURE DRIP</span></div>
+    </div>
+    <div class="mob-order-cta" data-show="0.9" data-hide="1.01">
+      <a href="#menu" class="btn-primary">Order Now</a>
     </div>
 
     <div class="section-label" id="scroll-label">SCROLL TO BUILD YOUR KOTA</div>
@@ -2867,7 +3051,7 @@ body.nav-open #nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate
   var navbar   = document.getElementById('navbar');
   var section  = document.getElementById('scroll-anim');
   var sticky   = document.getElementById('scroll-anim-sticky');
-  var annCards = document.querySelectorAll('.annotation-card');
+  var annCards = document.querySelectorAll('.annotation-card, .mob-scroll-card, .mob-order-cta');
   var scrollLabel = document.getElementById('scroll-label');
 
   // ── Canvas sizing & drawing ─────────────────────────
