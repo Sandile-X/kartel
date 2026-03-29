@@ -1,0 +1,5 @@
+# Markdown docs
+*.md
+
+# Copilot skill files
+.copilot/
